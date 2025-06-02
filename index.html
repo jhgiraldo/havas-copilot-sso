@@ -227,83 +227,81 @@
             const { token } = await fetchJSON(tokenEndpoint);
             const directLine = window.WebChat.createDirectLine({ token, domain: "https://europe.directline.botframework.com/v3/directline" });
 
-            const store = WebChat.createStore(
-                {},
-                ({ dispatch }) => next => action => {
-                    const { type } = action;
+             const store = WebChat.createStore(
+  {},
+  ({ dispatch }) => next => action => {
+    const { type } = action;
 
-                    // Configure your bot to start the conversation automatically
-                    // See https://learn.microsoft.com/en-us/microsoft-copilot-studio/configure-bot-greeting?tabs=web
-                    if (action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
-                        dispatch({
-                            meta: {
-                                method: "keyboard",
-                            },
-                            payload: {
-                                activity: {
-                                    channelData: {
-                                        postBack: true,
-                                    },
-                                    // Web Chat will show the 'Greeting' System Topic message which has a trigger-phrase 'hello'
-                                    name: 'startConversation',
-                                    type: "event"
-                                },
-                            },
-                            type: "DIRECT_LINE/POST_ACTIVITY",
-                        });
-                    }
+    // Configure your bot to start the conversation automatically
+    // See https://learn.microsoft.com/en-us/microsoft-copilot-studio/configure-bot-greeting?tabs=web
+    if (action.type === "DIRECT_LINE/CONNECT_FULFILLED") {
+      dispatch({
+        meta: {
+          method: "keyboard",
+        },
+        payload: {
+          activity: {
+            channelData: {
+              postBack: true,
+            },
+            // Web Chat will show the 'Greeting' System Topic message which has a trigger-phrase 'hello'
+            name: 'startConversation',
+            type: "event"
+          },
+        },
+        type: "DIRECT_LINE/POST_ACTIVITY",
+      });
+    }
 
-                    // Filter incoming activities from Direct Line to intercept the Login Card
-                    // If we are logged in and have a valid auth token, we will directly pass this in the background to the bot.
-                    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
-                        const activity = action.payload.activity;
-                        let resourceUri;
+    // Filter incoming activities from Direct Line to intercept the Login Card
+    // If we are logged in and have a valid auth token, we will directly pass this in the background to the bot.
+    // If we are not logged in, the OAuthCard will be blocked and not shown (custom login is handled externally)
+    if (action.type === 'DIRECT_LINE/INCOMING_ACTIVITY') {
+      const activity = action.payload.activity;
+      let resourceUri;
 
-                        if (activity.from && activity.from.role === 'bot' && (resourceUri = getOAuthCardResourceUri(activity))) {
+      const isOAuthCard = activity.attachments?.[0]?.contentType === 'application/vnd.microsoft.card.oauth';
 
-                            exchangeTokenAsync(resourceUri).then((token) => {
-                                if (token) {
-                                    directLine.postActivity({
-                                        type: 'invoke',
-                                        name: 'signin/tokenExchange',
-                                        value: {
-                                            id: activity.attachments[0].content.tokenExchangeResource.id,
-                                            connectionName: activity.attachments[0].content.connectionName,
-                                            token
-                                        },
-                                        "from": {
-                                            id: userID,
-                                            name: user.name,
-                                            role: "user"
-                                        }
-                                    }).subscribe(
-                                        id => {
-                                            if (id === 'retry') {
-                                                // Bot was not able to handle the invoke, so display the oauthCard
-                                                return next(action);
-                                            }
-                                            // Tokenexchange successful and we do not display the oauthCard
-                                        },
-                                        error => {
-                                            // An error occurred to display the oauthCard
-                                            return next(action);
-                                        }
-                                    );
-                                    return;
-                                }
-                                else {
-                                    return next(action);
-                                }
-                            });
-                        }
-                        else {
-                            return next(action);
-                        }
-                    }
-                    else {
-                        return next(action);
-                    }
-                });
+      if (isOAuthCard) {
+        resourceUri = getOAuthCardResourceUri(activity);
+        const accounts = msalInstance.getAllAccounts();
+
+        if (accounts.length > 0) {
+          exchangeTokenAsync(resourceUri).then((token) => {
+            if (token) {
+              directLine.postActivity({
+                type: 'invoke',
+                name: 'signin/tokenExchange',
+                value: {
+                  id: activity.attachments[0].content.tokenExchangeResource.id,
+                  connectionName: activity.attachments[0].content.connectionName,
+                  token
+                },
+                from: {
+                  id: user?.localAccountId ?? "user",
+                  name: user?.name ?? "user",
+                  role: "user"
+                }
+              }).subscribe();
+              // Token exchange successful and we do not display the OAuthCard
+            }
+            // If token is not available, the OAuthCard is still blocked
+          });
+
+          return;
+        } else {
+          // Not logged in: OAuthCard is blocked (login handled via external button)
+          return;
+        }
+      }
+
+      return next(action);
+    } else {
+      return next(action);
+    }
+  }
+);
+ 
 
             const styleOptions = {
                 // Add styleOptions to customize Web Chat canvas
