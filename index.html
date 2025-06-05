@@ -10,83 +10,88 @@
     <script type="text/javascript">
         if (typeof msal === 'undefined') document.write(unescape("%3Cscript src='https://alcdn.msftauth.net/browser/2.32.0/js/msal-browser.min.js' type='text/javascript' %3E%3C/script%3E"));
     </script>
+    <!--Font Type-->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow&display=swap" rel="stylesheet">
+
 
     <!-- This styling is for the canvas demonstration purposes. It is recommended 
     that style is moved to separate file for organization in larger projects -->
     <style>
+        @font-face {
+  font-family: 'BaikalBlack';
+  src: url('https://nazdelsur.github.io/Test/Fonts/BaikalNormal-Black.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
         html,
         body {
-            height: 100%;
-        }
+    background-color: #f2f2f2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        body {
-            margin: 0;
-            font-family: "Segoe UI", "Segoe UI Web (West European)", "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
+#chatwindow {
+    width: 80%;
+    max-width: 900px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-top: 20px;
+}
 
-        #header {
-            background-color: rgb(11, 85, 106);
-            color: rgb(255, 255, 255);
-            font-weight: 600;
-            height: 48px;
-            padding: 0px 13px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+#header {
+    background-color: white;
+    color: #e60000;
+    font-weight: 700;
+    font-size: 24px;
+    font-family: 'Montserrat', sans-serif;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #e60000;
+}
 
-        #subheader {
-            background-color: rgb(243, 242, 241);
-            padding: 7px 13px;
-            font-size: 12px;
-            font-weight: 400;
-        }
+#subheader {
+    background-color: #f5f5f5;
+    padding: 5px 20px;
+    font-size: 14px;
+    color: #666;
+}
 
-        a {
-            color: rgb(0, 90, 158);
-        }
+#webchat {
+    height: calc(100vh - 150px);
+}
 
-        a:hover {
-            color: rgb(0, 69, 120);
-        }
-
-        #webchat {
-            position: fixed;
-            height: calc(100% - 75px);
-            width: 100%;
-            top: 75px;
-            overflow: hidden;
-        }
-
-        #logout {
-            display: none;
-        }
     </style>
 
 </head>
 
 <body>
-    <div id="chatwindow">
-        <div id="header">
-            SSO Test Bot
-        </div>
-        <div id="subheader">
-            <span id="loginStatus">You are not logged in on the website.</span>
-            <a id="login" href="#" onclick="onSignInClick()">Log in</a>
-            <a id="logout" href="#" onclick="onSignOutClick()">Log out</a>
-        </div>
-
-        <div id="webchat"> </div>
+  <div id="chatwindow">
+    <div id="header">
+      <img src="HAVAS_LOGO_2023.png" alt="HAVAS LOGO" style="height: 32px; margin-right: 10px;" />
+      <span style="font-size: 24px; font-weight: bold; color: #e60000"></span>
     </div>
+
+    <div id="subheader">
+      <span id="loginStatus">You are not logged in on the website.</span>
+      <a id="login" href="#" onclick="onSignInClick()">Log in</a>
+      <a id="logout" href="#" onclick="onSignOutClick()">Log out</a>
+    </div>
+
+    <div id="webchat"> </div>
+  </div>
+</body>
 
     <script>
         // TODO Change parameters below to your client id, tenant id and token endpoint.
         // See documentation (https://learn.microsoft.com/en-us/microsoft-copilot-studio/configure-sso?tabs=webApp)
-        const clientId = "b4962b03-dff5-4a3d-9ec3-1174e2cd929c";
-      const tenantId = "c7ed5557-a5c8-4435-9fab-ada7abcdc01b";
-      const tokenEndpoint =
-        "https://1e256ba4f2f8ec3ca82251b8b111f2.4a.environment.api.powerplatform.com/powervirtualagents/botsbyschema/cr5e6_gaIa/directline/token?api-version=2022-03-01-preview";
+          const clientId = "b4962b03-dff5-4a3d-9ec3-1174e2cd929c";
+          const tenantId = "c7ed5557-a5c8-4435-9fab-ada7abcdc01b";
+          const tokenEndpoint ="https://1e256ba4f2f8ec3ca82251b8b111f2.4a.environment.api.powerplatform.com/powervirtualagents/botsbyschema/cr5e6_gaIa/directline/token?api-version=2022-03-01-preview";
 
         // Config object to be passed to Msal on creation
         const msalConfig = {
@@ -303,26 +308,37 @@
 );
  
 
-            const styleOptions = {
-                // Add styleOptions to customize Web Chat canvas
-                hideUploadButton: true,
-                botAvatarImage: 'https://bot-framework.azureedge.net/bot-icons-v1/6ab9b101-b65c-4357-9e9f-915cbf313a14_2K5Bt02aW8egEb97fxAgh7vqChK4UV3Nh3Lw3YYArhEKR8mB.png',
-                botAvatarInitials: 'Bot',
-                userAvatarImage: 'https://content.powerapps.com/resource/makerx/static/media/user.0d06c38a.svg',
-                userAvatarInitials: 'User'
-            };
+const styleOptions = {
+  botAvatarImage: 'igris_bot_icon_128x128.png',
+  botAvatarInitials: '🤖',
+  userAvatarImage: 'https://nazdelsur.github.io/Test/Icon_mini.png',
+  bubbleBackground: '#f5f5f5',
+  bubbleBorderRadius: 12,
+  bubbleFromUserBackground: 'transparent',
+  bubbleFromUserBorderRadius: 12,
+  hideUploadButton: false,
+  sendBoxBackground: '#e0e0e0',
+  sendBoxBorderTop: 'solid 2px #ccc',
+  sendBoxTextColor: '#000',
+    primaryFont: "'BaikalBlack', sans-serif",
+  accent: '#e60000'
+};
 
-            window.WebChat.renderWebChat(
-                {
-                    directLine: directLine,
-                    store,
-                    userID: userID,
-                    styleOptions
-                },
-                document.getElementById('webchat')
-            );
+window.WebChat.renderWebChat(
+  {
+    directLine,
+    store,
+    styleOptions,
+    userID: userID,
+    user: {
+      id: userID,
+      name: user?.name || 'User'
+    }
+  },
+  document.getElementById('webchat')
+);
+
         }
-
         // Render the WebChat when the page loads
         (async () => {
             await renderChatWidget()
