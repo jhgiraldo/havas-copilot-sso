@@ -333,15 +333,15 @@ window.WebChat.renderWebChat(
     store,
     styleOptions,
     userID: userID,
-user: {
-  id: userID,
-  name: user?.name || 'User',
-  role: 'user' // ✅ Esto es clave para que Web Chat sepa que es el usuario y muestre su avatar
-}
-
+    user: {
+      id: userID,
+      name: user?.name || 'User',
+      role: 'user'
+    }
   },
   document.getElementById('webchat')
 );
+
 
         }
         // Render the WebChat when the page loads
