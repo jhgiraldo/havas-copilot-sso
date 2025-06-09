@@ -326,29 +326,13 @@ const styleOptions = {
   accent: '#e60000'
 };
             
-const activityMiddleware = () => next => card => {
-  if (card.activity.from.role === 'user') {
-    card.activity.from = {
-      id: userID,
-      name: user?.name || 'User',
-      role: 'user'
-    };
-  }
-  return next(card);
-};
+window.WebChat.renderWebChat({
+  directLine,
+  store,
+  userID,
+  styleOptions
+});
 
-window.WebChat.renderWebChat(
-  {
-    directLine,
-    store,
-    styleOptions,
-    userID: userID,
-    user: {
-      id: userID,
-      name: user?.name || 'User',
-      role: 'user'
-    }
-  },
   document.getElementById('webchat')
 );
 
