@@ -326,13 +326,13 @@ const styleOptions = {
   accent: '#e60000'
 };
             
-window.WebChat.renderWebChat({
-  directLine,
-  store,
-  userID,
-  styleOptions
-});
-
+window.WebChat.renderWebChat(
+  {
+    directLine,
+    store,
+    styleOptions,
+    userID: userID,
+  },
   document.getElementById('webchat')
 );
 
