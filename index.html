@@ -309,24 +309,31 @@
  
 
 const styleOptions = {
-  botAvatarImage: 'https://jhgiraldo.github.io/havas-copilot-sso/hubot-svgrepo-com.svg',
-  botAvatarInitials: '',
-  botAvatarBackgroundColor: 'transparent',
-  userAvatarImage: 'https://jhgiraldo.github.io/havas-copilot-sso/user-svgrepo-com.svg',
-    userAvatarInitials: '',
-  userAvatarBackgroundColor: 'transparent',
-    avatarSize: 26,
-  bubbleBackground: 'transparent',
-  bubbleBorderRadius: 12,
-  bubbleFromUserBackground: 'transparent',
-  bubbleFromUserBorderRadius: 12,
-  hideUploadButton: false,
-  sendBoxBackground: '#e0e0e0',
-  sendBoxBorderTop: 'solid 2px #ccc',
-  sendBoxTextColor: '#000',
-  primaryFont: "'BaikalBlack', sans-serif",
-  accent: '#e60000'
+  botAvatarImage: 'https://jhgiraldo.github.io/havas-copilot-sso/hubot-svgrepo-com.svg', // Bot's avatar image inside the chatbot
+  botAvatarInitials: '', // Initials shown if image fails or is missing
+  botAvatarBackgroundColor: 'transparent', // Background color for the bot's avatar
+
+  userAvatarImage: 'https://jhgiraldo.github.io/havas-copilot-sso/user-svgrepo-com.svg', // User's avatar image inside the chatbot
+  userAvatarInitials: '', // Initials shown if image fails or is missing
+  userAvatarBackgroundColor: 'transparent', // Background color for the user's avatar
+
+  avatarSize: 26, // Size (in px) of both bot and user avatars
+
+  bubbleBackground: 'transparent', // Background color of the bot's chat bubbles
+  bubbleBorderRadius: 12, // Border radius of the bot's chat bubbles
+  bubbleFromUserBackground: 'transparent', // Background color of the user's chat bubbles
+  bubbleFromUserBorderRadius: 12, // Border radius of the user's chat bubbles
+
+  hideUploadButton: false, // Whether to hide the file upload button in the chat input
+
+  sendBoxBackground: '#e0e0e0', // Background color of the input box
+  sendBoxBorderTop: 'solid 2px #ccc', // Top border style of the input box
+  sendBoxTextColor: '#000', // Text color in the input box
+
+  primaryFont: "'BaikalBlack', sans-serif", // Primary font for all chat content
+  accent: '#e60000' // Accent color (used for buttons, active states, etc.)
 };
+
             
 const activityMiddleware = () => next => card => {
   if (card.activity.from.role === 'user') {
