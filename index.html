@@ -326,16 +326,29 @@ const styleOptions = {
   accent: '#e60000'
 };
             
-window.WebChat.renderWebChat(
-  {
-    directLine,
-    store,
-    styleOptions,
-    userID: userID,
+const activityMiddleware = () => next => card => {
+  if (card.activity.from.role === 'user') {
+    card.activity.from = {
+      id: userID,
+      name: 'User',
+      role: 'user'
+    };
+  }
+  return next(card);
+};
+            
+window.WebChat.renderWebChat({
+  directLine,
+  store,
+  styleOptions,
+  userID: userID,
+  user: {
+    id: userID,
+    name: 'User',
+    role: 'user'
   },
-  document.getElementById('webchat')
-);
-
+  activityMiddleware
+}, document.getElementById('webchat'));
 
         }
         // Render the WebChat when the page loads
