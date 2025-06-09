@@ -53,6 +53,17 @@
     align-items: center;
     border-bottom: 2px solid #e60000;
 }
+         #login, #logout {
+  background-color: #e60000;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
 
 #subheader {
     background-color: #f5f5f5;
@@ -78,8 +89,8 @@
 
     <div id="subheader">
       <span id="loginStatus">You are not logged in on the website.</span>
-      <a id="login" href="#" onclick="onSignInClick()">Log in</a>
-      <a id="logout" href="#" onclick="onSignOutClick()">Log out</a>
+        <button id="login" onclick="onSignInClick()">Log in</button>
+        <button id="logout" onclick="onSignOutClick()" style="display:none">Log out</button>
     </div>
 
     <div id="webchat"> </div>
