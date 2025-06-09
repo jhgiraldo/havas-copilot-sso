@@ -325,7 +325,17 @@ const styleOptions = {
   primaryFont: "'BaikalBlack', sans-serif",
   accent: '#e60000'
 };
-
+            
+const activityMiddleware = () => next => card => {
+  if (card.activity.from.role === 'user') {
+    card.activity.from = {
+      id: userID,
+      name: user?.name || 'User',
+      role: 'user'
+    };
+  }
+  return next(card);
+};
 
 window.WebChat.renderWebChat(
   {
